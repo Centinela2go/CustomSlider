@@ -6,6 +6,7 @@ export default function Slider() {
   const [activeSlide, setActiveSlide] = useState(1);
   const [previousSlide, setPreviousSlide] = useState(null);
   const [isDisable, setIsDisable] = useState(false);
+  const [autoplayTimeLeft, setAutoplayTimeLeft] = useState(12000);
   const [slides, setSlides] = useState([
     {
       id: 1,
@@ -44,6 +45,7 @@ export default function Slider() {
     if (isDisable) {
       return;
     }
+    setAutoplayTimeLeft(12000);
     setIsDisable(true);
     setPreviousSlide(activeSlide);
     const index = newIndex(activeSlide - 1);
@@ -57,6 +59,7 @@ export default function Slider() {
     if (isDisable) {
       return;
     }
+    setAutoplayTimeLeft(12000);
     setIsDisable(true);
     setPreviousSlide(activeSlide);
     const index = newIndex(activeSlide + 1);
@@ -70,7 +73,7 @@ export default function Slider() {
     if (isDisable || Number(slideIndex) === activeSlide) {
       return;
     }
-
+    setAutoplayTimeLeft(12000);
     setIsDisable(true);
     setPreviousSlide(activeSlide);
     const index = newIndex(Number(slideIndex));
@@ -108,6 +111,19 @@ export default function Slider() {
       window.removeEventListener("mousemove", handleMouseMove);
     }
   };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (autoplayTimeLeft > 0) {
+        setAutoplayTimeLeft(autoplayTimeLeft - 1000); // Resta 1 segundo cada segundo
+      } else {
+        handleNext();
+      }
+    }, 1000);
+
+    // Limpia el intervalo cuando el componente se desmonta
+    return () => clearInterval(intervalId);
+  }, [autoplayTimeLeft]);
 
   return (
     <>
