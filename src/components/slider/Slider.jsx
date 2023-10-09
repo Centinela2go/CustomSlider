@@ -50,7 +50,7 @@ export default function Slider() {
     setSlides([{ id: index, direction: "left", isVisible: true }]);
     setTimeout(() => {
       setIsDisable(false);
-    }, 2000);
+    }, 3000);
   };
 
   const handleNext = () => {
@@ -63,7 +63,7 @@ export default function Slider() {
     setSlides([{ id: index, direction: "right", isVisible: true }]);
     setTimeout(() => {
       setIsDisable(false);
-    }, 2000);
+    }, 3000);
   };
 
   const handleDot1 = (slideIndex) => {
@@ -78,7 +78,7 @@ export default function Slider() {
     setSlides([{ id: index, direction, isVisible: true }]);
     setTimeout(() => {
       setIsDisable(false);
-    }, 2000);
+    }, 3000);
   };
 
   const handleDot = (event) => {

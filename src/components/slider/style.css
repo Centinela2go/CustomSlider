@@ -103,12 +103,16 @@
 }
 
 .animation-left {
-  animation: slide-in-left 1s ease-in-out forwards;
+  animation: slide-in-left 2s ease-in-out forwards;
 }
 
 @keyframes slide-in-left {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(-100%) scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
   }
 
   100% {
@@ -117,12 +121,16 @@
 }
 
 .animation-right {
-  animation: slide-in-right 1s ease-in-out forwards;
+  animation: slide-in-right 2s ease-in-out forwards;
 }
 
 @keyframes slide-in-right {
   0% {
-    transform: translateX(100%) scale(1.1);
+    transform: translateX(100%) scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
   }
 
   100% {
@@ -131,17 +139,17 @@
 }
 
 .animation-title {
-  animation: animation-text 1s ease-in-out 1s forwards;
+  animation: animation-text 1s ease-in-out 2s forwards;
   opacity: 0;
 }
 
 .animation-description {
-  animation: animation-text 1s ease-in-out 1.3s forwards;
+  animation: animation-text 1s ease-in-out 2.3s forwards;
   opacity: 0;
 }
 
 .animation-button {
-  animation: animation-text 1s ease-in-out 1.5s forwards;
+  animation: animation-text 1s ease-in-out 2.5s forwards;
   opacity: 0;
 }
 
