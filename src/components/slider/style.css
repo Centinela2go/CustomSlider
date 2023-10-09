@@ -94,7 +94,7 @@
   @apply stroke-[3px] stroke-white;
   stroke-dashoffset: calc(125.6 * (1 - var(--progress)));
   stroke-dasharray: 125.6;
-  @apply transform rotate-[-90deg];
+  @apply transform rotate-[-270deg];
 }
 
 .swiper-pagination-circle-index {
@@ -162,5 +162,25 @@
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.animation-circle svg {
+  animation: animation-circle-fill 13.8s linear;
+}
+
+.paused-circle svg {
+  animation-play-state: paused !important;
+}
+.running-circle svg {
+  animation-play-state: running !important;
+}
+
+@keyframes animation-circle-fill {
+  0% {
+    stroke-dashoffset: 125.6;
+  }
+  100% {
+    stroke-dashoffset: 0; /* Valor final deseado */
   }
 }

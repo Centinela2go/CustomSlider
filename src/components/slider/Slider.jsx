@@ -7,6 +7,8 @@ export default function Slider() {
   const [previousSlide, setPreviousSlide] = useState(null);
   const [isDisable, setIsDisable] = useState(false);
   const [autoplayTimeLeft, setAutoplayTimeLeft] = useState(12000);
+  const [isPaused, setIsPaused] = useState(false);
+  //   const [progress, setProgress] = useState(1);
   const [slides, setSlides] = useState([
     {
       id: 1,
@@ -45,6 +47,14 @@ export default function Slider() {
     if (isDisable) {
       return;
     }
+    // const progressCircle = document.getElementById(
+    //   `contador-id-${activeSlide}`
+    // );
+
+    // if (progressCircle) {
+    //   progressCircle.style.setProperty("--progress", 1);
+    // }
+    // setProgress(0);
     setAutoplayTimeLeft(12000);
     setIsDisable(true);
     setPreviousSlide(activeSlide);
@@ -59,6 +69,14 @@ export default function Slider() {
     if (isDisable) {
       return;
     }
+    // const progressCircle = document.getElementById(
+    //   `contador-id-${activeSlide}`
+    // );
+
+    // if (progressCircle) {
+    //   progressCircle.style.setProperty("--progress", 1);
+    // }
+    // setProgress(0);
     setAutoplayTimeLeft(12000);
     setIsDisable(true);
     setPreviousSlide(activeSlide);
@@ -73,6 +91,15 @@ export default function Slider() {
     if (isDisable || Number(slideIndex) === activeSlide) {
       return;
     }
+    // const progressCircle = document.getElementById(
+    //   `contador-id-${activeSlide}`
+    // );
+
+    // if (progressCircle) {
+    //   progressCircle.style.setProperty("--progress", 1);
+    // }
+    // setProgress(0);
+
     setAutoplayTimeLeft(12000);
     setIsDisable(true);
     setPreviousSlide(activeSlide);
@@ -114,16 +141,41 @@ export default function Slider() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      if (autoplayTimeLeft > 0) {
-        setAutoplayTimeLeft(autoplayTimeLeft - 1000); // Resta 1 segundo cada segundo
+      if (!document.hidden) {
+        setIsPaused(true);
+        if (autoplayTimeLeft > 0) {
+          setAutoplayTimeLeft(autoplayTimeLeft - 1000); // Resta 1 segundo cada segundo
+        } else {
+          handleNext();
+        }
       } else {
-        handleNext();
+        setIsPaused(false);
       }
     }, 1000);
 
     // Limpia el intervalo cuando el componente se desmonta
     return () => clearInterval(intervalId);
-  }, [autoplayTimeLeft]);
+  }, [autoplayTimeLeft, isPaused]);
+
+  //   useEffect(() => {
+  //     const intervalId = setInterval(() => {
+  //       const progressCircle = document.getElementById(
+  //         `contador-id-${activeSlide}`
+  //       );
+
+  //       if (progressCircle) {
+  //         progressCircle.style.setProperty("--progress", 1 - progress);
+  //       }
+
+  //       if (progress < 1) {
+  //         setProgress(progress + 1 / 4700); // Aumenta el progreso en 0.1 cada segundo
+  //       } else {
+  //         setProgress(0);
+  //       }
+  //     }, 1);
+
+  //     return () => clearInterval(intervalId);
+  //   }, [progress]);
 
   return (
     <>
@@ -213,7 +265,11 @@ export default function Slider() {
                 className="dot"
                 onClick={handleDot}
               >
-                <div className="swiper-pagination-circle">
+                <div
+                  className={`swiper-pagination-circle ${
+                    activeSlide === value ? "animation-circle " : "opacity-50"
+                  } `}
+                >
                   <div
                     id={`circle-id-${value}`}
                     className="swiper-pagination-circle-index"
