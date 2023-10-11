@@ -33,10 +33,13 @@ export default function Slider({ slidesInfo }) {
     if (isDisable) {
       return;
     }
+
     setAutoplayTimeLeft(12000);
+    setCurrentTime(0);
     setIsDisable(true);
     setPreviousSlide(activeSlide);
     const index = newIndex(activeSlide - 1);
+
     setSlides([{ id: index, direction: "left" }]);
     setTimeout(() => {
       setIsDisable(false);
@@ -53,6 +56,7 @@ export default function Slider({ slidesInfo }) {
     setIsDisable(true);
     setPreviousSlide(activeSlide);
     const index = newIndex(activeSlide + 1);
+
     setSlides([{ id: index, direction: "right" }]);
     setTimeout(() => {
       setIsDisable(false);
