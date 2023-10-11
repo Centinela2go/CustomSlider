@@ -1,42 +1,28 @@
 import { useState, useRef, useEffect } from "react";
 import "./style.css";
 
-export default function Slider() {
+export default function Slider({ slidesInfo }) {
   const refSlider = useRef(null);
   const [activeSlide, setActiveSlide] = useState(1);
   const [previousSlide, setPreviousSlide] = useState(null);
   const [isDisable, setIsDisable] = useState(false);
   const [autoplayTimeLeft, setAutoplayTimeLeft] = useState(12000);
-  const [isPaused, setIsPaused] = useState(false);
-  //   const [progress, setProgress] = useState(1);
+  const [progress, setProgress] = useState(true);
+  const [currentTime, setCurrentTime] = useState(0);
+
   const [slides, setSlides] = useState([
     {
       id: 1,
       direction: "",
-      isVisible: true,
     },
   ]);
 
-  const slidesInfo = [
-    {
-      title: "Tienes hasta 30% dscto. en DGO Full",
-      description:
-        "Lo mejor del streaming y TV por 6 meses con tus Tarjetas Interbank.",
-      textButton: "Conoce Mas",
-    },
-    {
-      title: "Descubre el MegaSale de Shopstar",
-      description:
-        "Dsctos únicos en todas las categorías con tus Tarjetas Interbank",
-      textButton: "Ver Mas",
-    },
-  ];
-
   const newIndex = (value) => {
+    const numSlides = Number(slidesInfo.length);
     if (value < 1) {
-      value = 2;
+      value = numSlides;
     }
-    if (value > 2) {
+    if (value > numSlides) {
       value = 1;
     }
     setActiveSlide(value);
@@ -47,19 +33,11 @@ export default function Slider() {
     if (isDisable) {
       return;
     }
-    // const progressCircle = document.getElementById(
-    //   `contador-id-${activeSlide}`
-    // );
-
-    // if (progressCircle) {
-    //   progressCircle.style.setProperty("--progress", 1);
-    // }
-    // setProgress(0);
     setAutoplayTimeLeft(12000);
     setIsDisable(true);
     setPreviousSlide(activeSlide);
     const index = newIndex(activeSlide - 1);
-    setSlides([{ id: index, direction: "left", isVisible: true }]);
+    setSlides([{ id: index, direction: "left" }]);
     setTimeout(() => {
       setIsDisable(false);
     }, 3000);
@@ -69,54 +47,46 @@ export default function Slider() {
     if (isDisable) {
       return;
     }
-    // const progressCircle = document.getElementById(
-    //   `contador-id-${activeSlide}`
-    // );
 
-    // if (progressCircle) {
-    //   progressCircle.style.setProperty("--progress", 1);
-    // }
-    // setProgress(0);
     setAutoplayTimeLeft(12000);
+    setCurrentTime(0);
     setIsDisable(true);
     setPreviousSlide(activeSlide);
     const index = newIndex(activeSlide + 1);
-    setSlides([{ id: index, direction: "right", isVisible: true }]);
+    setSlides([{ id: index, direction: "right" }]);
     setTimeout(() => {
       setIsDisable(false);
     }, 3000);
   };
 
-  const handleDot1 = (slideIndex) => {
+  const handleDot = () => {
+    const slideIndex = Number(event.target.id.slice(-1));
     if (isDisable || Number(slideIndex) === activeSlide) {
       return;
     }
-    // const progressCircle = document.getElementById(
-    //   `contador-id-${activeSlide}`
-    // );
-
-    // if (progressCircle) {
-    //   progressCircle.style.setProperty("--progress", 1);
-    // }
-    // setProgress(0);
-
     setAutoplayTimeLeft(12000);
+    setCurrentTime(0);
     setIsDisable(true);
     setPreviousSlide(activeSlide);
-    const index = newIndex(Number(slideIndex));
+    const index = newIndex(slideIndex);
     const direction = index < activeSlide ? "left" : "right";
-    setSlides([{ id: index, direction, isVisible: true }]);
+    setSlides([{ id: index, direction }]);
     setTimeout(() => {
       setIsDisable(false);
     }, 3000);
   };
 
-  const handleDot = (event) => {
-    const slideIndex = event.currentTarget.querySelector(
-      ".swiper-pagination-circle-index"
-    ).textContent;
-    handleDot1(slideIndex);
-  };
+  useEffect(() => {
+    return () => {
+      const numSlides = Number(slidesInfo.length);
+      const dots = document.querySelector(".container-dots-main");
+      dots.style.setProperty("--widthdots", `${40 * numSlides}px`);
+      dots.style.setProperty("--margindots", `-${20 * numSlides}px`);
+      const dots1 = document.querySelector(".dots-mobile");
+      dots1.style.setProperty("--widthdotsmobile", `${20 * numSlides}px`);
+      dots1.style.setProperty("--margindotsmobile", `-${10 * numSlides}px`);
+    };
+  }, []);
 
   let ini = null;
 
@@ -142,40 +112,55 @@ export default function Slider() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (!document.hidden) {
-        setIsPaused(true);
         if (autoplayTimeLeft > 0) {
-          setAutoplayTimeLeft(autoplayTimeLeft - 1000); // Resta 1 segundo cada segundo
+          setAutoplayTimeLeft(autoplayTimeLeft - 1000);
         } else {
           handleNext();
         }
-      } else {
-        setIsPaused(false);
       }
     }, 1000);
 
-    // Limpia el intervalo cuando el componente se desmonta
     return () => clearInterval(intervalId);
-  }, [autoplayTimeLeft, isPaused]);
+  }, [autoplayTimeLeft]);
 
-  //   useEffect(() => {
-  //     const intervalId = setInterval(() => {
-  //       const progressCircle = document.getElementById(
-  //         `contador-id-${activeSlide}`
-  //       );
+  useEffect(() => {
+    const duration = 12000;
+    const frameRate = 60;
 
-  //       if (progressCircle) {
-  //         progressCircle.style.setProperty("--progress", 1 - progress);
-  //       }
+    const intervalId = setInterval(() => {
+      const progressCircle = document.getElementById(
+        `contador-id-${activeSlide}`
+      );
+      if (!document.hidden) {
+        if (progressCircle) {
+          setProgress(true);
+          if (progress) {
+            const newCurrentTime = currentTime + 1000 / frameRate;
+            setCurrentTime(newCurrentTime);
+            const elapsed = newCurrentTime / duration;
+            progressCircle.style.setProperty("--progress", elapsed);
+          }
+        }
+      } else {
+        setProgress(false);
+      }
+    }, 1000 / frameRate);
 
-  //       if (progress < 1) {
-  //         setProgress(progress + 1 / 4700); // Aumenta el progreso en 0.1 cada segundo
-  //       } else {
-  //         setProgress(0);
-  //       }
-  //     }, 1);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [currentTime]);
 
-  //     return () => clearInterval(intervalId);
-  //   }, [progress]);
+  useEffect(() => {
+    if (previousSlide) {
+      const progressCircle = document.getElementById(
+        `contador-id-${previousSlide}`
+      );
+      progressCircle.style.setProperty("--progress", 1);
+    }
+
+    return () => {};
+  }, [activeSlide]);
 
   return (
     <>
@@ -206,7 +191,7 @@ export default function Slider() {
               key={`slide-id-${slide.id}`}
               className={`slide slide-${slide.id} animation-${
                 slide.direction
-              } ${slide.isVisible ? "visible" : ""}`}
+              } ${slide.isVisible ? "" : ""}`}
             >
               <div className="information">
                 <h2
@@ -234,49 +219,53 @@ export default function Slider() {
             </div>
           ))}
         </div>
-        <button
-          onClick={handlePrev}
-          className="absolute left-0 xl:left-[10%] top-1/2 -mt-5 pl-4 hidden lg:block"
-        >
+        <button onClick={handlePrev} className="btn-prev">
           <img
             src="/images/arrow.png"
             alt="arrow-prev"
             className="rotate-180 h-10"
           />
         </button>
-        <button
-          onClick={handleNext}
-          className="absolute right-0 xl:right-[10%] top-1/2 -mt-5 pr-4 hidden lg:block"
-        >
+        <button onClick={handleNext} className="btn-next">
           <img src="/images/arrow.png" alt="arrow-next" className="h-10" />
         </button>
 
-        <div>
-          {[1, 2].map((value) => {
-            <div className=""></div>;
-          })}
+        <div className={`dots-mobile`}>
+          <div className={`relative flex w-full justify-between`}>
+            {slidesInfo.map((value, index) => (
+              <div
+                className={`w-4 h-4 bg-white rounded-full cursor-pointer ${
+                  activeSlide === index + 1 ? "" : "opacity-50"
+                }`}
+                key={`dot-mobile-${index + 1}`}
+                id={`dot-id-mobile-${index + 1}`}
+                onClick={handleDot}
+              ></div>
+            ))}
+          </div>
         </div>
 
-        <div className="container-dots-main hidden md:block">
+        <div className="container-dots-main">
           <div className="container-dots">
-            {[1, 2].map((value) => (
+            {slidesInfo.map((value, index) => (
               <div
-                key={`circle-dot-${value}`}
+                key={`circle-dot-${index + 1}`}
+                id={`circle-id-dot-${index + 1}`}
                 className="dot"
                 onClick={handleDot}
               >
                 <div
                   className={`swiper-pagination-circle ${
-                    activeSlide === value ? "animation-circle " : "opacity-50"
-                  } `}
+                    activeSlide === index + 1 ? "" : "opacity-50"
+                  }`}
                 >
                   <div
-                    id={`circle-id-${value}`}
+                    id={`circle-id-${index + 1}`}
                     className="swiper-pagination-circle-index"
                   >
-                    {value}
+                    {index + 1}
                   </div>
-                  <svg viewBox="0 0 40 40" id={`contador-id-${value}`}>
+                  <svg viewBox="0 0 40 40" id={`contador-id-${index + 1}`}>
                     <circle cx="20" cy="20" r="18"></circle>
                   </svg>
                 </div>
