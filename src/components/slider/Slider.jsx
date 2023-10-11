@@ -219,19 +219,20 @@ export default function Slider({ slidesInfo }) {
             </div>
           ))}
         </div>
-        <button onClick={handlePrev} className="btn-prev">
-          <img
-            src="/images/arrow.png"
-            alt="arrow-prev"
-            className="rotate-180 h-10"
-          />
-        </button>
-        <button onClick={handleNext} className="btn-next">
-          <img src="/images/arrow.png" alt="arrow-next" className="h-10" />
-        </button>
 
-        <div className={`dots-mobile`}>
-          <div className={`relative flex w-full justify-between`}>
+        <div className="container-arrows">
+          <div className="arrows-btn">
+            <button onClick={handlePrev} className="btn-prev">
+              <img src="/images/arrow.png" alt="arrow-prev" />
+            </button>
+            <button onClick={handleNext} className="btn-next">
+              <img src="/images/arrow.png" alt="arrow-next" />
+            </button>
+          </div>
+        </div>
+
+        <div className="dots-mobile">
+          <div className="dots-mobile-container">
             {slidesInfo.map((value, index) => (
               <div
                 className={`w-4 h-4 bg-white rounded-full cursor-pointer ${
